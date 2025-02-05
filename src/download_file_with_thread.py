@@ -12,7 +12,6 @@ def parallel_download(url_list, save_dirs, extracted_dirs):
                 executor.submit(thread_2, url_list[1], save_dirs[1], extracted_dirs[1]),
                 executor.submit(thread_3, url_list[2], save_dirs[2], extracted_dirs[2]),
         ]
-        #futures = executor.submit(download_file, url_list[0], save_directory)
         concurrent.futures.wait(futures)  # 等待所有 thread 完成
         
         print("所有檔案下載完成")
