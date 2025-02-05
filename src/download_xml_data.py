@@ -62,8 +62,8 @@ def parse_xml(file_path):
 
 
 # 測試下載並解壓縮和解析
-save_directory = "檔案下載後之儲存位置"
-extract_directory = "解壓縮後之儲存位置"
+save_directory = "data"
+extract_directory = "data"
 
 for i in range(0, 1042):
     url = "https://tisvcloud.freeway.gov.tw/history/motc20/VD/20250116/VDLive_" + str(1041-i) + ".xml.gz"  # 替換為實際 XML.GZ 檔案 URL
