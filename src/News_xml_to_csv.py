@@ -4,7 +4,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 # 設定 XML 檔案所在的資料夾和輸出的 CSV 檔案
-input_folder = r"D:\Old.D_\大學\專題\競賽資料\Code\data_xml\unextracted"  # 修改為你的 XML 檔案資料夾路徑
+input_folder = r"xml路徑"  # 修改為你的 XML 檔案資料夾路徑
 output_file = "output.csv"
 
 # 解析 XML 並提取數據
