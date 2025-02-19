@@ -13,8 +13,40 @@ from tqdm import tqdm
 
 
 
-root = './'
-header_content = []
+'''讓之後的所有requests失敗(遇到RequestException)時都會自動重試，避免網路斷線時報錯'''
+# 定義重試參數
+MAX_RETRIES = 5   # 最大重試次數
+RETRY_DELAY = 5   # 每次重試的間隔秒數
+RETRY_DELAY_MULTIPLIER = 3  # 間隔秒數的乘數
+
+if not getattr(requests.Session, "_is_patched", False):
+    # 保存原始的 requests 方法
+    _original_request = requests.Session.request
+
+    def retry_request(self, method, url, *args, **kwargs):
+        current_retry_delay = RETRY_DELAY
+        for attempt in range(MAX_RETRIES):
+            try:
+                response = _original_request(self, method, url, *args, **kwargs)
+                response.raise_for_status()  # 檢查 HTTP 狀態碼
+                return response
+            except requests.exceptions.RequestException as e:
+                # print(f"請求失敗（第 {attempt + 1} 次）：{e}")
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(current_retry_delay := current_retry_delay * RETRY_DELAY_MULTIPLIER)  # 每次重試之前增加延遲
+                    # print(current_retry_delay)
+                else:
+                    raise  Exception(f"請求失敗（第 {attempt + 1} 次），放棄重試：{e}") #達到最大重試次數後拋出異常
+
+    # 替換 requests 的 request 方法
+    requests.Session.request = retry_request # type: ignore
+    requests.Session._is_patched = True
+    print('注意：已修改reqquests，現在會自動重試請求')
+else:
+    print('requests已經被修改過了，將會自動重試請求')
+''''''
+
+root = './data/'
 class Url:
     def __init__(self, url, name, path = '', last_modified = '2099-01-25 07:04'):
         self.url : str = url
@@ -27,7 +59,7 @@ class Url:
     
     def __repr__(self):
         return f"[{self.url}, \n{self.name}, \n{self.path}, \n{self.last_modified}]"
-# date = datetime(2024, 1, 1, 0, 0)  
+
 def get_url_type(url : str) -> str:
     '''
     檢查目標網址是下載連結還是網頁連結，避免不必要的流量消耗
