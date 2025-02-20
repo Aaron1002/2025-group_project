@@ -136,7 +136,7 @@ else:
     date = str(input("請輸入欲下載的日期 (格式: YYYYMMDD): "))
     save_directory = str(input("請輸入欲存入之資料夾路徑: "))
     extract_directory = str(input("請輸入解壓縮後欲存入之資料夾路徑: "))
-    single_url = "https://tisvcloud.freeway.gov.tw/history/motc20/VD/" + date + "/VD_0000.xml.gz" 
+    single_url = "https://tisvcloud.freeway.gov.tw/history/TDCS/M03A/" + date + "/13/TDCS_M03A_" + date + "_135500.csv"
     
     single_thread_download()
 
