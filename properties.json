@@ -1,0 +1,62 @@
+{
+	"各旅次路徑原始資料 (M06A)": {
+		"missing column": [
+			
+		],
+		"useful column": [
+			"VehicleType"
+		],
+		"useless column" : [
+		
+		],
+		"all column": {
+			"VehicleType": "車種，31小客車、32小貨車、41大客車、42大貨車、5聯結車",
+			"DetectionTimeO": "通過起點時間",
+			"GantryO": "起點編號",
+			"DetectionTimeD": "通過終點時間",
+			"GantryD": "終點編號",
+			"TripLength": "距離(km)" ,
+			"TripEnd": "狀態(Y:正常結束，N:異常)",
+			"TripInformation": "旅次經過的各門架之通過時間及門架編號"
+		},
+		"Data Time": "2025-02-20"
+	},
+	"各類車種旅次平均長度 (M07A)": {
+		"missing column": [
+			
+		],
+		"useful column": [
+			
+		],
+		"useless column" : [
+		
+		],
+		"all column": {
+			"TimeStamp": "時間(hr)",
+			"GantryO": "起點編號",
+			"VehicleType": "車種，31小客車、32小貨車、41大客車、42大貨車、5聯結車",
+			"AverageTripLength": "旅次平均長度(km)",
+			"Volume": "交通量"
+		},
+		"Data Time": "2025-02-20"
+	},
+	"各類車種旅次數量 (M08A)": {
+		"missing column": [
+			
+		],
+		"useful column": [
+			
+		],
+		"useless column" : [
+		
+		],
+		"all column": {
+			"TimeStamp": "時間(hr)",
+			"GantryO": "起點編號",
+			"GantryD": "終點編號",
+			"VehicleType": "車種，31小客車、32小貨車、41大客車、42大貨車、5聯結車",
+			"Trips": "旅次數"
+		},
+		"Data Time": "2025-02-20"
+	}
+}
