@@ -85,6 +85,8 @@ def find_path_with_name(name : str) -> str:
     target_url = table.find("a", {'title': name}).get("href") # type: ignore
     assert type(target_url) is str #target_url應該要是string
     print(target_url)
+    if name == "各類車種通行量統計各類車種 (M03A)":
+        target_url += "/"
     
     return target_url
 
