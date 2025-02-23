@@ -40,7 +40,7 @@ if not getattr(requests.Session, "_is_patched", False):
 
     # 替換 requests 的 request 方法
     requests.Session.request = retry_request # type: ignore
-    requests.Session._is_patched = True
+    requests.Session._is_patched = True # type: ignore
     print('注意：已修改reqquests，現在會自動重試請求')
 else:
     print('requests已經被修改過了，將會自動重試請求')
