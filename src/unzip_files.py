@@ -3,11 +3,7 @@
 :usage: unzip_files("{欲被解壓縮的資料夾路徑}")
 ex: unzip_files("./test_zip_folder")，會將`test_zip_folder`內的所有檔案解壓縮到新的資料夾`unzip_test_zip_folder`
 '''
-
-from operator import mul
 import os
-from tracemalloc import start
-from turtle import up
 import zipfile
 import logging
 from datetime import datetime
