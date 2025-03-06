@@ -23,8 +23,11 @@ def extract_file(file_path, extract_path):
             zip_ref.extractall(extract_path)
     elif tarfile.is_tarfile(file_path):
         # logging.info(f'開始解壓縮: {file_path}')
-        with tarfile.open(file_path, 'r:*') as tar_ref:
-            tar_ref.extractall(extract_path)
+        try:
+            with tarfile.open(file_path, 'r:*') as tar_ref:
+                tar_ref.extractall(extract_path)
+        except:
+                print(file_path)
     elif file_path.endswith('.gz'):
         # logging.info(f'開始解壓縮: {file_path}')
         os.makedirs(extract_path, exist_ok=True)
@@ -59,7 +62,7 @@ def unzip_files_normal(folder_path, output_folder):
                     # logging.info(f'複製檔案完成: {file_path} 到 {extract_path}')
                 pbar.update(1)
 
-def unzip_files_multithreaded(folder_path, output_folder):
+def unzip_files_multithreaded(folder_path, output_folder, filter_date = None):
     # 取得資料夾名稱
     # folder_name = os.path.basename(folder_path.rstrip('/\\'))
     print(f"output_folder: {output_folder}")
@@ -85,6 +88,11 @@ def unzip_files_multithreaded(folder_path, output_folder):
     waiting_list = []
     total_files = sum(len(files) for _, _, files in os.walk(folder_path))
     
+    if filter_date == None:
+        filter_ = lambda date: True
+    else:
+        filter_ = lambda date: filter_date in date        
+    
     def thread_worker(waiting_eles):
         for file_path, extract_path in waiting_eles:
             process_file(file_path, extract_path)
@@ -95,10 +103,11 @@ def unzip_files_multithreaded(folder_path, output_folder):
         # 走訪資料夾內所有檔案
         for root, _, files in os.walk(folder_path):
             for file in files:
-                file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(root, folder_path)
-                extract_path = os.path.join(output_folder, relative_path)
-                waiting_list.append([file_path, extract_path])
+                if filter_(file):
+                    file_path = os.path.join(root, file)
+                    relative_path = os.path.relpath(root, folder_path)
+                    extract_path = os.path.join(output_folder, relative_path)
+                    waiting_list.append([file_path, extract_path])
         
         for i in range(0, len(waiting_list), worker_per_thread):
             t = threading.Thread(target=thread_worker, args=([waiting_list[i:i+worker_per_thread]]))
@@ -129,13 +138,13 @@ def check_for_remaining_archives(folder_path):
             pbar.update(1)
     return remaining_archives
 
-def unzip_files(target_folder_path, output_folder=None):
+def unzip_files(target_folder_path, output_folder=None, filter_date=None):
     log_folder = os.path.join(os.path.dirname(__file__), '.log')
     os.makedirs(log_folder, exist_ok=True)
     target_folder_name = os.path.basename(target_folder_path.rstrip('/\\'))
     
     if output_folder == None: output_folder = os.path.dirname(target_folder_path) #預設為原路徑
-    output_folder = os.path.join(output_folder, f'unzip_{target_folder_name}')
+    output_folder = os.path.join(output_folder, f'unzip_{target_folder_name}{filter_date if filter_date != None else ""}')
     
     print(f"from: {target_folder_path}\nto: {output_folder}")
     
@@ -151,7 +160,7 @@ def unzip_files(target_folder_path, output_folder=None):
     # single = end - start
 
     start_mt = time.time()
-    unzip_files_multithreaded(target_folder_path, output_folder)
+    unzip_files_multithreaded(target_folder_path, output_folder, filter_date)
     end_mt = time.time()
     multi = end_mt - start_mt
 
@@ -164,6 +173,9 @@ def unzip_files(target_folder_path, output_folder=None):
         print("所有檔案已解壓縮")
     else:
         print(f"有未解壓縮的檔案{remaining_zip_file}")
+
+
+# unzip_files("./data/各旅次路徑原始資料 (M06A)", filter_date='202404')
 
 # target_folder_path = r"C:\Users\user\OneDrive\documents\code\Python\Projects\project-2025\src\data\eTag 配對路徑動態資訊(v2.0)"
 # output_folder = r"D:\data"
